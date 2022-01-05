@@ -260,12 +260,12 @@ namespace Cemuhook {
 						case DATA:
 							var rtype = (RegistrationType)inp.read_byte();
 							var slot = inp.read_byte();
-							uint64 mac = (inp.read_byte() << 0)  |
-							             (inp.read_byte() << 8)  |
-							             (inp.read_byte() << 16) |
-							             (inp.read_byte() << 24) |
+							uint64 mac = (inp.read_byte() << 40) |
 							             (inp.read_byte() << 32) |
-							             (inp.read_byte() << 40);
+							             (inp.read_byte() << 24) |
+							             (inp.read_byte() << 16) |
+							             (inp.read_byte() << 8)  |
+							             (inp.read_byte() << 0);
 							register_controllers_request(client_id, sender, rtype, slot, mac);
 							break;
 						}
@@ -317,13 +317,14 @@ namespace Cemuhook {
 				ostr.put_byte((uint8)dev.get_connection_type());
 				{
 					// 48-bit number is a pain to work with
+					// It's also stored in big-endian manner, go figure
 					var mac = dev.get_mac();
-					ostr.put_byte((uint8)(mac >> 0));
-					ostr.put_byte((uint8)(mac >> 8));
-					ostr.put_byte((uint8)(mac >> 16));
-					ostr.put_byte((uint8)(mac >> 24));
-					ostr.put_byte((uint8)(mac >> 32));
 					ostr.put_byte((uint8)(mac >> 40));
+					ostr.put_byte((uint8)(mac >> 32));
+					ostr.put_byte((uint8)(mac >> 24));
+					ostr.put_byte((uint8)(mac >> 16));
+					ostr.put_byte((uint8)(mac >> 8));
+					ostr.put_byte((uint8)(mac >> 0));
 				}
 				ostr.put_byte((uint8)dev.get_battery());
 			}
