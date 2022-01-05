@@ -127,7 +127,6 @@ namespace Cemuhook {
 	}
 
 	[SimpleType]
-	//[CCode (has_copy_function = false, has_destroy_function = false)]
 	public struct TouchData {
 		uint8 id;
 		uint16 x;

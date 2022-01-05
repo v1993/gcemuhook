@@ -374,8 +374,8 @@ namespace Cemuhook {
 					var record = it.get_value();
 					if ((record.last_request_time + REQUEST_TIMEOUT) < current_time) {
 						var request = it.get_key();
-						assert(device_to_client_map.remove((!) request.dev, record));
-						assert(client_to_device_map.remove(request.client_id, (!) request.dev));
+						assert(device_to_client_map.remove(request.dev, record));
+						assert(client_to_device_map.remove(request.client_id, request.dev));
 						it.unset();
 					}
 				}
@@ -446,8 +446,6 @@ namespace Cemuhook {
 					var btns = base_inputs.buttons;
 					ostr.put_byte((uint8)((uint16)btns >> 0));
 					ostr.put_byte((uint8)((uint16)btns >> 8));
-					ostr.put_byte(0); // PS Button
-					ostr.put_byte(0); // Touch button
 
 					{
 						AnalogButtonsData abdata;
