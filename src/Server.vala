@@ -71,7 +71,7 @@ namespace Cemuhook {
 	 * For server to work, you *must* run main loop, either directly or via one of many
 	 * existing wrappers.
 	 */
-	public sealed class Server: Object, Initable {
+	public class Server: Object, Initable {
 		[Description(nick = "UDP port to use", blurb = "Server will accept connections on this port")]
 		public uint16 port { get; construct; default = 26760; }
 		public weak MainContext? context { get; construct; default = null; }
@@ -130,13 +130,18 @@ namespace Cemuhook {
 			var addr = new InetSocketAddress(new InetAddress.loopback(socket_family), port);
 			sock.bind(addr, false);
 
+			// The below code produces vala warnings - THIS IS INTENDED AND KNOWN
+			// See https://gitlab.gnome.org/GNOME/vala/-/issues/957#note_1346912
+
 			var socket_source = sock.create_source(IN);
-			socket_source.set_callback(handle_incoming_packet);
+			SocketSourceFunc socket_delegate = handle_incoming_packet;
+			socket_source.set_callback(socket_delegate);
 			socket_source.attach(context);
 			socket_source_guard = new Utils.SourceGuard(socket_source);
 
 			var cleanup_source = new TimeoutSource.seconds(1);
-			cleanup_source.set_callback(cleanup_controllers);
+			SourceFunc cleanup_delegate = cleanup_controllers;
+			cleanup_source.set_callback(cleanup_delegate);
 			cleanup_source.attach(context);
 			cleanup_source_guard = new Utils.SourceGuard(cleanup_source);
 			return true;
@@ -177,7 +182,7 @@ namespace Cemuhook {
 			 * This would be a bit tricky to do efficiently and this also is not a problem because:
 			 * 1. Those only hold weak references, so device destruction is not delayed.
 			 * 2. Device removal cycle will clean those up in 5 seconds or less.
-			 * 
+			 *
 			 * The only scenario where this may cause issues is rapidly connecting and disconnecting device,
 			 * but this is unlikely to happen in practice and even then DoS can be caused by clients
 			 * without anything like rapid reconnects going on.
