@@ -113,17 +113,6 @@ namespace Cemuhook {
 			init();
 		}
 
-		~Server() {
-			/*
-			 * SourceGuards take care of utilized sources in RAII manner, so we only need to
-			 * clean up used signals.
-			 */
-			var it = device_signals_map.map_iterator();
-			for (var has_next = it.next (); has_next; has_next = it.next ()) {
-				SignalHandler.disconnect(it.get_key(), it.get_value());
-			}
-		}
-
 		public bool init(Cancellable? cancellable = null) throws Error {
 			SocketFamily socket_family = IPV4;
 			sock = new Socket(socket_family, DATAGRAM, UDP);
