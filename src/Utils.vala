@@ -83,4 +83,45 @@ namespace Cemuhook.Utils {
 			print ("%s| %s\n", string.nfill ((16 - (i % 16)) * 3, ' '), builder.str);
 		}
 	}
+
+	internal bool parse_header(char magic_char, DataInputStream inp, uint8[] msg, out HeaderData header_data) throws Error {
+		header_data = HeaderData() { id = 0, type = 0 };
+		// Check header magic
+		if (inp.read_byte() != 'D' ||
+			inp.read_byte() != 'S' ||
+			inp.read_byte() != 'U' ||
+			inp.read_byte() != magic_char) {
+			debug("bad header magic");
+			return false;
+		}
+
+		// Check protocol version
+		if (inp.read_uint16() != PROTOCOL_VERSION) {
+			debug("bad protocol version");
+			return false;
+		}
+
+		// Verify length
+		if (inp.read_uint16() != (msg.length - HEADER_LENGTH)) {
+			debug("bad length");
+			return false;
+		}
+
+		// Verify CRC32
+		{
+			var crc_expected = inp.read_uint32();
+			GLib.Memory.set(&msg[8], 0, 4);
+			var crc_computed = ZLib.Utility.crc32(0, msg);
+			if (crc_expected != crc_computed) {
+				debug("bad CRC value");
+				return false;
+			}
+		}
+
+		header_data = HeaderData() {
+			id = inp.read_uint32(),
+			type = (MessageType)inp.read_uint32()
+		};
+		return true;
+	}
 }

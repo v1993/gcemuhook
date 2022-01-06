@@ -32,6 +32,12 @@ namespace Cemuhook {
 		DATA = 0x100002
 	}
 
+	[SimpleType]
+	public struct HeaderData {
+		uint32 id;
+		MessageType type;
+	}
+
 	public enum SlotState {
 		NOT_CONNECTED,
 		RESERVED,

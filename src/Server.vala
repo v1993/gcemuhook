@@ -198,55 +198,25 @@ namespace Cemuhook {
 		// TODO: separate header parsing into its own free function
 		private bool handle_incoming_packet(Socket socket, IOCondition condition) {
 			if (IN in condition) {
-				try {
-					SocketAddress sender;
-					ssize_t len = socket.receive_from(out sender, input_buffer);
-					if (len >= HEADER_LENGTH_FULL) {
+				SocketAddress sender;
+				while (IN in socket.condition_check(IN)) {
+					try {
+						ssize_t len = socket.receive_from(out sender, input_buffer);
+						if (len < HEADER_LENGTH_FULL) {
+							continue;
+						}
+
 						unowned var msg = input_buffer[0:len];
 						var mem_stream = Utils.CreateInlineMIStream(msg);
 						var inp = new DataInputStream(mem_stream);
 						inp.byte_order = LITTLE_ENDIAN;
 
-						// Parsing header
-
-						// Check header magic
-						if (inp.read_byte() != 'D' ||
-						    inp.read_byte() != 'S' ||
-						    inp.read_byte() != 'U' ||
-						    inp.read_byte() != 'C') {
-							debug("bad header magic");
-							return Source.CONTINUE;
+						HeaderData header;
+						if (!Utils.parse_header('C', inp, msg, out header)) {
+							continue;
 						}
 
-						// Check protocol version
-						if (inp.read_uint16() != PROTOCOL_VERSION) {
-							debug("bad protocol version");
-							return Source.CONTINUE;
-						}
-
-						// Verify length
-						// TODO: truncate overly long messages instead of dropping them
-						if (inp.read_uint16() != (len - HEADER_LENGTH)) {
-							debug("bad length");
-							return Source.CONTINUE;
-						}
-
-						// Verify CRC32
-						{
-							var crc_expected = inp.read_uint32();
-							GLib.Memory.set(&msg[8], 0, 4);
-							var crc_computed = ZLib.Utility.crc32(0, msg);
-							if (crc_expected != crc_computed) {
-								debug("bad CRC value");
-								return Source.CONTINUE;
-							}
-						}
-
-						var client_id = inp.read_uint32();
-						// Header formally ends right here
-						var message_type = (MessageType)inp.read_uint32();
-
-						switch (message_type) {
+						switch (header.type) {
 						case VERSION:
 							send_version_message(sender);
 							break;
@@ -260,17 +230,17 @@ namespace Cemuhook {
 							var rtype = (RegistrationType)inp.read_byte();
 							var slot = inp.read_byte();
 							uint64 mac = (inp.read_byte() << 40) |
-							             (inp.read_byte() << 32) |
-							             (inp.read_byte() << 24) |
-							             (inp.read_byte() << 16) |
-							             (inp.read_byte() << 8)  |
-							             (inp.read_byte() << 0);
-							register_controllers_request(client_id, sender, rtype, slot, mac);
+										 (inp.read_byte() << 32) |
+										 (inp.read_byte() << 24) |
+										 (inp.read_byte() << 16) |
+										 (inp.read_byte() << 8)  |
+										 (inp.read_byte() << 0);
+							register_controllers_request(header.id, sender, rtype, slot, mac);
 							break;
 						}
+					} catch (Error e) {
+						warning(@"Error when processing incoming packet: $(e.message)");
 					}
-				} catch (Error e) {
-					warning(@"Error when processing incoming packet: $(e.message)");
 				}
 			}
 
