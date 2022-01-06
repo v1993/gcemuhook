@@ -22,6 +22,7 @@ gcemuhook = library ('gcemuhook-0.1', gcemuhook_sources,
   install_dir: [true, true, true, true],
 
   #vala_args: '--enable-experimental-non-null'
+  c_args: '-DG_LOG_DOMAIN="gcemuhook"'
 )
 
 install_data('gcemuhook-0.1.deps', install_dir : get_option('datadir') / 'vala' / 'vapi')

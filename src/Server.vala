@@ -242,8 +242,6 @@ namespace Cemuhook {
 							}
 						}
 
-						debug("Checks passed on incoming packet");
-
 						var client_id = inp.read_uint32();
 						// Header formally ends right here
 						var message_type = (MessageType)inp.read_uint32();
@@ -540,7 +538,6 @@ namespace Cemuhook {
 
 					ostr.flush();
 
-					debug("Packet structuring complete");
 					foreach (var record in device_to_client_map[dev]) {
 						var packet_num = client_packet_counters[record.client_id];
 						client_packet_counters[record.client_id] = packet_num + 1;
