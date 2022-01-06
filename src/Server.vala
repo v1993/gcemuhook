@@ -124,6 +124,7 @@ namespace Cemuhook {
 
 			var socket_source = sock.create_source(IN);
 			SocketSourceFunc socket_delegate = handle_incoming_packet;
+			socket_source.set_priority(GLib.Priority.HIGH);
 			socket_source.set_callback(socket_delegate);
 			socket_source.attach(context);
 			socket_source_guard = new Utils.SourceGuard(socket_source);
