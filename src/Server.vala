@@ -137,6 +137,12 @@ namespace Cemuhook {
 			return true;
 		}
 
+		~Server() {
+			foreach (var dev in devices) {
+				dev.removed(this);
+			}
+		}
+
 		/**
 		 * Currently connected devices
 		 */
@@ -162,6 +168,7 @@ namespace Cemuhook {
 				throw new ServerError.SERVER_FULL("no free server slots");
 			}
 			devices.add(dev);
+			dev.added(this);
 			device_signals_map[dev] = dev.disconnected.connect_after(disconnect_device);
 			device_signals_map[dev] = dev.updated.connect_after(update_device);
 		}
@@ -192,6 +199,7 @@ namespace Cemuhook {
 
 			device_signals_map.remove_all(dev);
 
+			dev.removed(this);
 			devices.remove(dev);
 		}
 
@@ -229,12 +237,12 @@ namespace Cemuhook {
 						case DATA:
 							var rtype = (RegistrationType)inp.read_byte();
 							var slot = inp.read_byte();
-							uint64 mac = (inp.read_byte() << 40) |
-										 (inp.read_byte() << 32) |
-										 (inp.read_byte() << 24) |
-										 (inp.read_byte() << 16) |
-										 (inp.read_byte() << 8)  |
-										 (inp.read_byte() << 0);
+							uint64 mac = ((uint64)inp.read_byte() << 40) |
+										 ((uint64)inp.read_byte() << 32) |
+										 ((uint64)inp.read_byte() << 24) |
+										 ((uint64)inp.read_byte() << 16) |
+										 ((uint64)inp.read_byte() << 8)  |
+										 ((uint64)inp.read_byte() << 0);
 							register_controllers_request(header.id, sender, rtype, slot, mac);
 							break;
 						}

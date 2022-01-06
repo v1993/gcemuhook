@@ -45,6 +45,19 @@ namespace Cemuhook {
 		public signal void updated();
 
 		/**
+		 * Called right after device is added to server.
+		 */
+		public signal void added(Server server);
+
+		/**
+		 * Called right before device is removed from server.
+		 *
+		 * A raw pointer is used because this may be called during server's destruction. As such,
+		 * it's not recommended to call any server methods here.
+		 */
+		public signal void removed(Server* server);
+
+		/**
 		 * Get device's motion capabilities.
 		 *
 		 * Depending on result, {@link get_accelerometer} and {@link get_gyro} will
