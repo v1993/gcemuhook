@@ -371,20 +371,16 @@ namespace Cemuhook {
 		}
 
 		private void register_controllers_request(uint32 client_id, SocketAddress addr, RegistrationType rtype, uint8 slot, uint64 mac) {
-			var req = new ClientRequest(client_id);
-
 			if (rtype == ALL) {
 				foreach (var dev in devices) {
-					req.dev = dev;
-					register_controller(req, addr);
+					register_controller(new ClientRequest(client_id, dev), addr);
 				}
 				return;
 			}
 			if (SLOT in rtype) {
 				if (slot < devices.size) {
 					var dev = devices[slot];
-					req.dev = dev;
-					register_controller(req, addr);
+					register_controller(new ClientRequest(client_id, dev), addr);
 				}
 			}
 			if (MAC in rtype) {
@@ -393,8 +389,7 @@ namespace Cemuhook {
 				}
 				foreach (var dev in devices) {
 					if (dev.get_mac() == mac) {
-						req.dev = dev;
-						register_controller(req, addr);
+						register_controller(new ClientRequest(client_id, dev), addr);
 					}
 				}
 			}
@@ -520,7 +515,7 @@ namespace Cemuhook {
 						var packet_num = client_packet_counters[record.client_id];
 						client_packet_counters[record.client_id] = packet_num + 1;
 
-						mem_stream.seek(client_number_pos, SET);
+						ostr.seek(client_number_pos, SET);
 						ostr.put_uint32(packet_num);
 						ostr.flush();
 
