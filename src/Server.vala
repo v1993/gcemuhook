@@ -337,7 +337,7 @@ namespace Cemuhook {
 			} else {
 				// Follow-up request - just renew request data
 				record = clients_map[req];
-				//record.addr = addr; // Should not be needed, but is not harmful either
+				record.addr = addr; // Should not be needed, but is not harmful either
 				record.update();
 			}
 		}
