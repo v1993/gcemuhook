@@ -266,6 +266,8 @@ namespace Cemuhook {
 		}
 
 		private void fill_in_crc32(uint8[] msg) {
+			uint32 zeroes = 0;
+			Memory.copy(&msg[8], &zeroes, sizeof(uint32));
 			var crc = ZLib.Utility.crc32(0, msg).to_little_endian();
 			Memory.copy(&msg[8], &crc, sizeof(uint32));
 		}
