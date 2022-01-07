@@ -25,6 +25,11 @@ gcemuhook = library ('gcemuhook-0.1', gcemuhook_sources,
   c_args: '-DG_LOG_DOMAIN="gcemuhook"'
 )
 
+gcemuhook_dep = declare_dependency(link_with : gcemuhook,
+  include_directories : include_directories('.'),
+  #sources : ['gcemuhook-0.1.h'] # meson does not declare it as a build product
+)
+
 install_data('gcemuhook-0.1.deps', install_dir : get_option('datadir') / 'vala' / 'vapi')
 
 pkg = import('pkgconfig')
