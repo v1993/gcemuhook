@@ -1,6 +1,6 @@
 /* Constants.vala
  *
- * Copyright 2022 v1993 <v19930312@gmail.co,>
+ * Copyright 2022 v1993 <v19930312@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
