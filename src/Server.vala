@@ -203,7 +203,6 @@ namespace Cemuhook {
 			devices.remove(dev);
 		}
 
-		// TODO: separate header parsing into its own free function
 		private bool handle_incoming_packet(Socket socket, IOCondition condition) {
 			if (IN in condition) {
 				SocketAddress sender;
