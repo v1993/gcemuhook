@@ -69,6 +69,7 @@ namespace Cemuhook {
 		LOW =      0x02,
 		MEDIUM =   0x03,
 		HIGH =     0x04,
+		FULL =     0x05,
 		CHARGING = 0xEE,
 		CHARGED =  0xEF
 	}
