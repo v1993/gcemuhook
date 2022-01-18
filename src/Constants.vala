@@ -26,19 +26,19 @@ namespace Cemuhook {
 
 	public const uint8 STICK_NEUTRAL = 127;
 
-	public enum MessageType {
+	internal enum MessageType {
 		VERSION = 0x100000,
 		PORTS = 0x100001,
 		DATA = 0x100002
 	}
 
 	[SimpleType]
-	public struct HeaderData {
+	internal struct HeaderData {
 		uint32 id;
 		MessageType type;
 	}
 
-	public enum SlotState {
+	internal enum SlotState {
 		NOT_CONNECTED,
 		RESERVED,
 		CONNECTED
@@ -102,8 +102,6 @@ namespace Cemuhook {
 		TOUCH
 	}
 
-	// Note: this feature only works for Vala users
-	[CCode (default_value = "((CemuhookBaseData){.buttons = 0, .left_x = CEMUHOOK_STICK_NEUTRAL, .left_y = CEMUHOOK_STICK_NEUTRAL, .right_x = CEMUHOOK_STICK_NEUTRAL, .right_y = CEMUHOOK_STICK_NEUTRAL})")]
 	[SimpleType]
 	public struct BaseData {
 		Buttons buttons;
