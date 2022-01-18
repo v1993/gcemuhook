@@ -119,23 +119,33 @@ namespace Cemuhook {
 		 *
 		 * Only called if {@link get_device_type} reports that device has motion.
 		 *
-		 * It probably should not update for gyroscope-gly changes.
+		 * It generally should not update for gyroscope-only changes.
 		 */
 		public virtual uint64 get_motion_timestamp() { assert_not_reached(); }
 		/**
-		 * Get accelerometer data for device.
+		 * Get accelerometer data for device in Gs.
 		 *
 		 * Only called if {@link get_device_type} reports that device has motion.
 		 *
-		 * TODO: describe axis directions
+		 * Axis directions:
+		 *
+		 * || ''Name'' || ''Positive direction''                             ||
+		 * || x        || Rightwards (-1.0f when laying on the left side)    ||
+		 * || y        || Downwards (-1.0f when laying still)                ||
+		 * || z        || Forward (-1.0f whith buttons facing away from you) ||
 		 */
 		public virtual MotionData get_accelerometer() { assert_not_reached(); }
 		/**
-		 * Get gyroscope data for device.
+		 * Get gyroscope data for device in deg/s.
 		 *
 		 * Only called if {@link get_device_type} reports that device has gyro.
 		 *
-		 * TODO: describe axis directions
+		 * Axis directions:
+		 *
+		 * || ''Name'' || ''Description'' || ''Positive direction''                               ||
+		 * || x        || Pitch           || Clockwise when viewed from the left (far end rising) ||
+		 * || y        || Yaw             || Clockwise when viewed from the top                   ||
+		 * || z        || Roll            || Clockwise when viewed from the near end              ||
 		 */
 		public virtual MotionData get_gyro() { assert_not_reached(); }
 	}
