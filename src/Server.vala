@@ -396,6 +396,58 @@ namespace Cemuhook {
 			}
 		}
 
+		private MotionData apply_accel_orientation(MotionData accel, DeviceOrientation orientation) {
+			switch(orientation) {
+				case NORMAL:
+					return accel;
+				case SIDEWAYS_LEFT:
+					return MotionData() {
+						x =  accel.z,
+						y =  accel.y,
+						z = -accel.x
+					};
+				case SIDEWAYS_RIGHT:
+					return MotionData() {
+						x = -accel.z,
+						y =  accel.y,
+						z =  accel.x
+					};
+				case INVERTED:
+					return MotionData() {
+						x = -accel.x,
+						y =  accel.y,
+						z = -accel.z
+					};
+			}
+			assert_not_reached();
+		}
+
+		private MotionData apply_gyro_orientation(MotionData gyro, DeviceOrientation orientation) {
+			switch(orientation) {
+				case NORMAL:
+					return gyro;
+				case SIDEWAYS_LEFT:
+					return MotionData() {
+						x = -gyro.z,
+						y =  gyro.y,
+						z =  gyro.x
+					};
+				case SIDEWAYS_RIGHT:
+					return MotionData() {
+						x =  gyro.z,
+						y =  gyro.y,
+						z = -gyro.x
+					};
+				case INVERTED:
+					return MotionData() {
+						x = -gyro.x,
+						y =  gyro.y,
+						z = -gyro.z
+					};
+			}
+			assert_not_reached();
+		}
+
 		private void update_device(AbstractPhysicalDevice dev) {
 			const size_t LEN = HEADER_LENGTH_FULL + 80;
 			uint8 outbuf[LEN] = {0};
@@ -488,7 +540,7 @@ namespace Cemuhook {
 					var dev_type = dev.get_device_type();
 					if (dev_type == ACCELEROMETER_ONLY || dev_type == GYRO_FULL) {
 						ostr.put_uint64(dev.get_motion_timestamp());
-						var accel = dev.get_accelerometer();
+						var accel = apply_accel_orientation(dev.get_accelerometer(), dev.orientation);
 						Utils.write_float(ostr, accel.x);
 						Utils.write_float(ostr, accel.y);
 						Utils.write_float(ostr, accel.z);
@@ -500,7 +552,7 @@ namespace Cemuhook {
 					}
 
 					if (dev_type == GYRO_FULL) {
-						var gyro = dev.get_gyro();
+						var gyro = apply_gyro_orientation(dev.get_gyro(), dev.orientation);
 						Utils.write_float(ostr, gyro.x);
 						Utils.write_float(ostr, gyro.y);
 						Utils.write_float(ostr, gyro.z);

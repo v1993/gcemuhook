@@ -35,6 +35,7 @@ namespace Cemuhook {
 		 * This will trigger destruction of device object if no other references are held to it.
 		 */
 		public signal void disconnected();
+
 		/**
 		 * Signals that new data packet is ready, connected to by Server.
 		 *
@@ -64,6 +65,7 @@ namespace Cemuhook {
 		 * or will not be called.
 		 */
 		public abstract DeviceType get_device_type();
+
 		/**
 		 * Get device's connection type.
 		 *
@@ -71,6 +73,7 @@ namespace Cemuhook {
 		 * worth the effort.
 		 */
 		public virtual ConnectionType get_connection_type() { return OTHER; }
+
 		/**
 		 * Get device's unique 48-bit identifier.
 		 *
@@ -97,8 +100,17 @@ namespace Cemuhook {
 		 */
 		public virtual bool has_analog_buttons() { return false; }
 
+		/**
+		 * Additional transformation to apply to motion data.
+		 *
+		 * Please note that this should be an option configurable by user. You should
+		 * provide reasonable orientation data in NORMAL orientation yourself.
+		 */
+		public abstract DeviceOrientation orientation { get; set; }
+
 		// Sent only in full response
 		public abstract BaseData get_base_inputs();
+
 		/**
 		 * Get analog inputs for device.
 		 *
@@ -106,6 +118,7 @@ namespace Cemuhook {
 		 * information from {@link get_base_inputs} is used to fill analog data.
 		 */
 		public virtual AnalogButtonsData get_analog_inputs() { assert_not_reached(); }
+
 		/**
 		 * Get touch data from device.
 		 *
@@ -114,6 +127,7 @@ namespace Cemuhook {
 		 * @return touch information for queried touch number or `null` if not present;
 		 */
 		public virtual TouchData? get_touch(uint8 touch_num) { return null; }
+
 		/**
 		 * Get motion timestamp in microseconds for device.
 		 *
@@ -122,6 +136,7 @@ namespace Cemuhook {
 		 * It generally should not update for gyroscope-only changes.
 		 */
 		public virtual uint64 get_motion_timestamp() { assert_not_reached(); }
+
 		/**
 		 * Get accelerometer data for device in Gs.
 		 *
@@ -135,6 +150,7 @@ namespace Cemuhook {
 		 * || z        || Forward (-1.0f whith buttons facing away from you) ||
 		 */
 		public virtual MotionData get_accelerometer() { assert_not_reached(); }
+
 		/**
 		 * Get gyroscope data for device in deg/s.
 		 *

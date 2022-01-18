@@ -74,6 +74,13 @@ namespace Cemuhook {
 		CHARGED =  0xEF
 	}
 
+	public enum DeviceOrientation {
+		NORMAL, ///< No changes are applied
+		SIDEWAYS_LEFT, ///< Example: using sideways left joycon or wiimote
+		SIDEWAYS_RIGHT, ///< Example: using sideways right joycon
+		INVERTED ///< Example: using sideways left joycon when game expects sideways right joycon
+	}
+
 	// Ordered as such to match packet order
 	[Flags]
 	public enum Buttons {
