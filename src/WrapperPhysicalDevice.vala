@@ -60,9 +60,6 @@ namespace Cemuhook {
 			get {
 				return wrapped_device.orientation;
 			}
-			set {
-				wrapped_device.orientation = value;
-			}
 		}
 		public BaseData get_base_inputs() { return wrapped_device.get_base_inputs(); }
 		public AnalogButtonsData get_analog_inputs() { return wrapped_device.get_analog_inputs(); }

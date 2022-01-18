@@ -106,7 +106,7 @@ namespace Cemuhook {
 		 * Please note that this should be an option configurable by user. You should
 		 * provide reasonable orientation data in NORMAL orientation yourself.
 		 */
-		public abstract DeviceOrientation orientation { get; set; }
+		public abstract DeviceOrientation orientation { get; }
 
 		// Sent only in full response
 		public abstract BaseData get_base_inputs();

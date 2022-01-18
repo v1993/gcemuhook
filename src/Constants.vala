@@ -78,7 +78,26 @@ namespace Cemuhook {
 		NORMAL, ///< No changes are applied
 		SIDEWAYS_LEFT, ///< Example: using sideways left joycon or wiimote
 		SIDEWAYS_RIGHT, ///< Example: using sideways right joycon
-		INVERTED ///< Example: using sideways left joycon when game expects sideways right joycon
+		INVERTED; ///< Example: using sideways left joycon when game expects sideways right joycon
+
+		public string to_string() {
+			EnumClass enumc = (EnumClass)typeof(DeviceOrientation).class_ref();
+			unowned EnumValue? eval = enumc.get_value (this);
+			return_val_if_fail(eval != null, null);
+			return eval.value_nick;
+		}
+
+		public static bool try_parse(string nick, out DeviceOrientation res) {
+			EnumClass enumc = (EnumClass)typeof(DeviceOrientation).class_ref();
+			unowned EnumValue? eval = enumc.get_value_by_nick(nick);
+			if (eval == null) {
+				res = NORMAL;
+				return false;
+			}
+
+			res = (DeviceOrientation)eval.value;
+			return true;
+		}
 	}
 
 	// Ordered as such to match packet order
