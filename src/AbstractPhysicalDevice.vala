@@ -93,14 +93,6 @@ namespace Cemuhook {
 		public virtual BatteryStatus get_battery() { return NA; }
 
 		/**
-		 * Check if analog buttons/triggers are supported by device.
-		 * 
-		 * If true, {@link get_analog_inputs} will be used to fill in data. Otherwise,
-		 * values from {@link get_base_inputs} are utilized.
-		 */
-		public virtual bool has_analog_buttons() { return false; }
-
-		/**
 		 * Additional transformation to apply to motion data.
 		 *
 		 * Please note that this should be an option configurable by user. You should
@@ -114,10 +106,10 @@ namespace Cemuhook {
 		/**
 		 * Get analog inputs for device.
 		 *
-		 * Only called if {@link has_analog_buttons} returns true. If it does not,
-		 * information from {@link get_base_inputs} is used to fill analog data.
+		 * Information from {@link get_base_inputs} is used to estimate analog data, then this function
+		 * is called to fill in with hardware data if supported.
 		 */
-		public virtual AnalogButtonsData get_analog_inputs() { assert_not_reached(); }
+		public virtual void get_analog_inputs(ref AnalogButtonsData abdata) {}
 
 		/**
 		 * Get touch data from device.

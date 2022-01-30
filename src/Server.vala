@@ -473,28 +473,26 @@ namespace Cemuhook {
 					ostr.put_byte((uint8)((uint16)btns >> 8));
 
 					{
-						AnalogButtonsData abdata;
-						if (dev.has_analog_buttons()) {
-							abdata = dev.get_analog_inputs();
-						} else {
-							// Generate data from binary inputs
-							abdata = AnalogButtonsData() {
-								dpad_up =    (UP    in btns ? 255 : 0),
-								dpad_down =  (DOWN  in btns ? 255 : 0),
-								dpad_left =  (LEFT  in btns ? 255 : 0),
-								dpad_right = (RIGHT in btns ? 255 : 0),
-								A =          (A     in btns ? 255 : 0),
-								B =          (B     in btns ? 255 : 0),
-								X =          (X     in btns ? 255 : 0),
-								Y =          (Y     in btns ? 255 : 0),
-								R1 =         (R1    in btns ? 255 : 0),
-								L1 =         (L1    in btns ? 255 : 0),
-								R2 =         (R2    in btns ? 255 : 0),
-								L2 =         (L2    in btns ? 255 : 0),
-								ps =         (PS    in btns ? 255 : 0),
-								touch =      (TOUCH in btns ? 255 : 0)
-							};
-						}
+						// Generate data from binary inputs
+						AnalogButtonsData abdata = AnalogButtonsData() {
+							dpad_up =    (UP    in btns ? 255 : 0),
+							dpad_down =  (DOWN  in btns ? 255 : 0),
+							dpad_left =  (LEFT  in btns ? 255 : 0),
+							dpad_right = (RIGHT in btns ? 255 : 0),
+							A =          (A     in btns ? 255 : 0),
+							B =          (B     in btns ? 255 : 0),
+							X =          (X     in btns ? 255 : 0),
+							Y =          (Y     in btns ? 255 : 0),
+							R1 =         (R1    in btns ? 255 : 0),
+							L1 =         (L1    in btns ? 255 : 0),
+							R2 =         (R2    in btns ? 255 : 0),
+							L2 =         (L2    in btns ? 255 : 0),
+							ps =         (PS    in btns ? 255 : 0),
+							touch =      (TOUCH in btns ? 255 : 0)
+						};
+
+						// Fill in hardware data if present
+						dev.get_analog_inputs(ref abdata);
 
 						ostr.put_byte(abdata.ps);
 						ostr.put_byte(abdata.touch);

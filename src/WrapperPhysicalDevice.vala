@@ -55,14 +55,13 @@ namespace Cemuhook {
 		public ConnectionType get_connection_type() { return wrapped_device.get_connection_type(); }
 		public uint64 get_mac() { return wrapped_device.get_mac(); }
 		public BatteryStatus get_battery() { return wrapped_device.get_battery(); }
-		public bool has_analog_buttons() { return wrapped_device.has_analog_buttons(); }
 		public DeviceOrientation orientation {
 			get {
 				return wrapped_device.orientation;
 			}
 		}
 		public BaseData get_base_inputs() { return wrapped_device.get_base_inputs(); }
-		public AnalogButtonsData get_analog_inputs() { return wrapped_device.get_analog_inputs(); }
+		public void get_analog_inputs(ref AnalogButtonsData abdata) { wrapped_device.get_analog_inputs(ref abdata); }
 		public TouchData? get_touch(uint8 touch_num) { return wrapped_device.get_touch(touch_num); }
 		public MotionData get_accelerometer() { return wrapped_device.get_accelerometer(); }
 		public MotionData get_gyro() { return wrapped_device.get_gyro(); }
