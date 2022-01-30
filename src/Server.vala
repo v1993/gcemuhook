@@ -471,6 +471,8 @@ namespace Cemuhook {
 					var btns = base_inputs.buttons;
 					ostr.put_byte((uint8)((uint16)btns >> 0));
 					ostr.put_byte((uint8)((uint16)btns >> 8));
+					ostr.put_byte((HOME  in btns ? 1 : 0)); // PS/HOME button
+					ostr.put_byte((TOUCH in btns ? 1 : 0));
 
 					{
 						// Generate data from binary inputs
@@ -487,17 +489,12 @@ namespace Cemuhook {
 							L1 =         (L1    in btns ? 255 : 0),
 							R2 =         (R2    in btns ? 255 : 0),
 							L2 =         (L2    in btns ? 255 : 0),
-							ps =         (PS    in btns ? 255 : 0),
-							touch =      (TOUCH in btns ? 255 : 0)
 						};
 
 						// Fill in hardware data if present
 						dev.get_analog_inputs(ref abdata);
 
-						ostr.put_byte(abdata.ps);
-						ostr.put_byte(abdata.touch);
-
-						// Sticks go in the middle of analog buttons, because of course they do
+						// Sticks go in the middle of button data, because of course they do
 						ostr.put_byte(base_inputs.left_x);
 						ostr.put_byte(base_inputs.left_y);
 						ostr.put_byte(base_inputs.right_x);

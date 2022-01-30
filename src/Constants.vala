@@ -123,8 +123,8 @@ namespace Cemuhook {
 		B,
 		Y,
 
-		// Analog-only
-		PS,
+		// Occupy separate bytes
+		HOME,
 		TOUCH
 	}
 
@@ -152,9 +152,6 @@ namespace Cemuhook {
 		uint8 L1;
 		uint8 R2;
 		uint8 L2;
-
-		uint8 ps;
-		uint8 touch;
 	}
 
 	[SimpleType]
