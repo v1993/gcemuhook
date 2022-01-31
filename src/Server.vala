@@ -471,8 +471,13 @@ namespace Cemuhook {
 					var btns = base_inputs.buttons;
 					ostr.put_byte((uint8)((uint16)btns >> 0));
 					ostr.put_byte((uint8)((uint16)btns >> 8));
-					ostr.put_byte((HOME  in btns ? 1 : 0)); // PS/HOME button
-					ostr.put_byte((TOUCH in btns ? 1 : 0));
+					ostr.put_byte((HOME  in btns) ? 1 : 0); // PS/HOME button
+					ostr.put_byte((TOUCH in btns) ? 1 : 0);
+
+					ostr.put_byte(base_inputs.left_x);
+					ostr.put_byte(base_inputs.left_y);
+					ostr.put_byte(base_inputs.right_x);
+					ostr.put_byte(base_inputs.right_y);
 
 					{
 						// Generate data from binary inputs
@@ -494,20 +499,14 @@ namespace Cemuhook {
 						// Fill in hardware data if present
 						dev.get_analog_inputs(ref abdata);
 
-						// Sticks go in the middle of button data, because of course they do
-						ostr.put_byte(base_inputs.left_x);
-						ostr.put_byte(base_inputs.left_y);
-						ostr.put_byte(base_inputs.right_x);
-						ostr.put_byte(base_inputs.right_y);
-
-						ostr.put_byte(abdata.dpad_up);
-						ostr.put_byte(abdata.dpad_down);
 						ostr.put_byte(abdata.dpad_left);
+						ostr.put_byte(abdata.dpad_down);
 						ostr.put_byte(abdata.dpad_right);
-						ostr.put_byte(abdata.A);
-						ostr.put_byte(abdata.B);
-						ostr.put_byte(abdata.X);
+						ostr.put_byte(abdata.dpad_up);
 						ostr.put_byte(abdata.Y);
+						ostr.put_byte(abdata.B);
+						ostr.put_byte(abdata.A);
+						ostr.put_byte(abdata.X);
 						ostr.put_byte(abdata.R1);
 						ostr.put_byte(abdata.L1);
 						ostr.put_byte(abdata.R2);
