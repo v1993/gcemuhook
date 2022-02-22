@@ -114,9 +114,13 @@ namespace Cemuhook {
 		}
 
 		public bool init(Cancellable? cancellable = null) throws Error {
-			SocketFamily socket_family = IPV4;
+			SocketFamily socket_family = IPV6;
 			sock = new Socket(socket_family, DATAGRAM, UDP);
-			var addr = new InetSocketAddress(new InetAddress.loopback(socket_family), port);
+			var addr = new InetSocketAddress(new InetAddress.any(socket_family), port);
+			// It may be a good idea to explicitly set socket option for IPV4 compatibility
+			if (!sock.speaks_ipv4()) {
+				warning("DSU socket listening only on IPv6 - you may have trouble connecting");
+			}
 			sock.bind(addr, false);
 
 			// The below code produces vala warnings - THIS IS INTENDED AND KNOWN
