@@ -80,8 +80,8 @@ namespace Cemuhook {
 		private uint32 server_id;
 		private uint8 input_buffer[2048];
 
-		private Utils.SourceGuard socket_source_guard;
-		private Utils.SourceGuard cleanup_source_guard;
+		private SocketSource socket_source;
+		private TimeoutSource cleanup_source;
 
 		private ArrayList<AbstractPhysicalDevice> devices;
 
@@ -122,18 +122,16 @@ namespace Cemuhook {
 			// The below code produces vala warnings - THIS IS INTENDED AND KNOWN
 			// See https://gitlab.gnome.org/GNOME/vala/-/issues/957#note_1346912
 
-			var socket_source = sock.create_source(IN);
+			socket_source = sock.create_source(IN);
 			SocketSourceFunc socket_delegate = handle_incoming_packet;
 			socket_source.set_priority(GLib.Priority.HIGH);
 			socket_source.set_callback(socket_delegate);
 			socket_source.attach(context);
-			socket_source_guard = new Utils.SourceGuard(socket_source);
 
-			var cleanup_source = new TimeoutSource.seconds(1);
+			cleanup_source = new TimeoutSource.seconds(1);
 			SourceFunc cleanup_delegate = cleanup_controllers;
 			cleanup_source.set_callback(cleanup_delegate);
 			cleanup_source.attach(context);
-			cleanup_source_guard = new Utils.SourceGuard(cleanup_source);
 			return true;
 		}
 

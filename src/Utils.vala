@@ -36,19 +36,6 @@ namespace Cemuhook.Utils {
 		return new MemoryInputStream.from_data((owned)data_copy);
 	}
 
-	// There might be a way to do this without introducing additional class
-	// Remove this if there indeed is one
-	internal class SourceGuard : Object {
-		public Source source { get; construct; }
-
-		public SourceGuard(Source source) {
-			Object(source: source);
-		}
-		~SourceGuard() {
-			source.destroy();
-		}
-	}
-
 	internal void write_float(DataOutputStream ostr, float flt) throws Error {
 		assert(sizeof(float) == sizeof(uint32));
 		uint32 target = 0;
