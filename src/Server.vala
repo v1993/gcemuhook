@@ -62,6 +62,8 @@ namespace Cemuhook {
 		}
 	}
 
+	delegate void ClientDeviceRequestCallback(AbstractPhysicalDevice dev) throws Error;
+
 	/**
 	 * Cemuhook-compliant server implementation
 	 *
@@ -236,6 +238,8 @@ namespace Cemuhook {
 							}
 							break;
 						case DATA:
+						case EXT_RUMBLE_INFO:
+						case EXT_RUMBLE_SET:
 							var rtype = (RegistrationType)inp.read_byte();
 							var slot = inp.read_byte();
 							uint64 mac = ((uint64)inp.read_byte() << 40) |
@@ -244,7 +248,32 @@ namespace Cemuhook {
 										 ((uint64)inp.read_byte() << 16) |
 										 ((uint64)inp.read_byte() << 8)  |
 										 ((uint64)inp.read_byte() << 0);
-							register_controllers_request(header.id, sender, rtype, slot, mac);
+							ClientDeviceRequestCallback cb;
+
+							// Practically speaking, we can read these in callback
+							// However, spec allows to rumble on multiple controllers at once
+							// Which is not something anyone will EVER do, but spec is spec...
+							uint8 motor_id, rumble_intensity;
+
+							switch (header.type) {
+							case DATA:
+								cb = (dev) => {register_controller(new ClientRequest(header.id, dev), sender);};
+								break;
+							case EXT_RUMBLE_INFO:
+								cb = (dev) => {send_rumble_info_message(dev, sender);};
+								break;
+							case EXT_RUMBLE_SET:
+								motor_id = inp.read_byte();
+								rumble_intensity = inp.read_byte();
+								cb = (dev) => {
+									warning("Got rumble request despite reporting zero motors - this is a bug in your emulator");
+								};
+								break;
+							default:
+								// Literally unreachable, only needed because of vala's flow analyzis not figuring it out
+								assert_not_reached();
+							}
+							for_each_requested_device(cb, rtype, slot, mac);
 							break;
 						}
 					} catch (Error e) {
@@ -345,6 +374,23 @@ namespace Cemuhook {
 			}
 		}
 
+		private void send_rumble_info_message(AbstractPhysicalDevice dev, SocketAddress addr) throws Error {
+			const size_t LEN = HEADER_LENGTH_FULL + 12;
+			uint8 outbuf[LEN] = {0};
+
+			var slot_id = (uint8)devices.index_of(dev);
+			{
+				var mem_stream = Utils.CreateInlineMOStream(outbuf);
+				var ostr = new DataOutputStream(mem_stream);
+
+				fill_in_header(ostr, PORTS, LEN);
+				fill_in_controller_header(ostr, slot_id);
+				ostr.put_byte(0); // TODO: query device for motors
+			}
+			fill_in_crc32(outbuf);
+			sock.send_to(addr, outbuf);
+		}
+
 		private bool cleanup_controllers() {
 			var current_time = get_monotonic_time();
 			{
@@ -373,17 +419,17 @@ namespace Cemuhook {
 			return Source.CONTINUE;
 		}
 
-		private void register_controllers_request(uint32 client_id, SocketAddress addr, RegistrationType rtype, uint8 slot, uint64 mac) {
+		private void for_each_requested_device(ClientDeviceRequestCallback cb, RegistrationType rtype, uint8 slot, uint64 mac) throws Error {
 			if (rtype == ALL) {
 				foreach (var dev in devices) {
-					register_controller(new ClientRequest(client_id, dev), addr);
+					cb(dev);
 				}
 				return;
 			}
 			if (SLOT in rtype) {
 				if (slot < devices.size) {
 					var dev = devices[slot];
-					register_controller(new ClientRequest(client_id, dev), addr);
+					cb(dev);
 				}
 			}
 			if (MAC in rtype) {
@@ -392,7 +438,7 @@ namespace Cemuhook {
 				}
 				foreach (var dev in devices) {
 					if (dev.get_mac() == mac) {
-						register_controller(new ClientRequest(client_id, dev), addr);
+						cb(dev);
 					}
 				}
 			}

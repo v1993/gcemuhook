@@ -29,7 +29,11 @@ namespace Cemuhook {
 	internal enum MessageType {
 		VERSION = 0x100000,
 		PORTS = 0x100001,
-		DATA = 0x100002
+		DATA = 0x100002,
+
+		// Rumble extension
+		EXT_RUMBLE_INFO = 0x110001,
+		EXT_RUMBLE_SET = 0x110002
 	}
 
 	[SimpleType]
