@@ -277,7 +277,7 @@ namespace Cemuhook {
 							break;
 						}
 					} catch (Error e) {
-						warning(@"Error when processing incoming packet: $(e.message)");
+						warning("Error when processing incoming packet: %s", e.message);
 					}
 				}
 			}
@@ -619,7 +619,7 @@ namespace Cemuhook {
 					}
 				}
 			} catch (Error e) {
-				warning(@"Error when sending data packet: $(e.message)");
+				warning("Error when sending data packet: %s", e.message);
 			}
 		}
 	}
