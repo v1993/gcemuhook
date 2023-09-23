@@ -2,8 +2,7 @@ gcemuhook_sources = [
   'AbstractPhysicalDevice.vala',
   'Constants.vala',
   'Server.vala',
-  'Utils.vala',
-  'WrapperPhysicalDevice.vala'
+  'Utils.vala'
 ]
 
 gcemuhook_deps = [
