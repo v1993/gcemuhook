@@ -165,19 +165,6 @@ namespace Cemuhook {
 		uint16 y;
 	}
 
-	// HACK: see https://gitlab.gnome.org/GNOME/vala/-/issues/1273
-	public void touch_data_free(TouchData* dat) {
-		g_free(dat);
-	}
-
-	// HACK: see https://gitlab.gnome.org/GNOME/vala/-/issues/1273
-	public TouchData* touch_data_dup(TouchData* dat) {
-		if (dat == null) return null;
-		TouchData* dat_new = malloc(sizeof(TouchData));
-		Memory.copy(dat_new, dat, sizeof(TouchData));
-		return dat_new;
-	}
-
 	[SimpleType]
 	public struct MotionData {
 		float x;
