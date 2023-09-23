@@ -25,6 +25,7 @@ namespace Cemuhook {
 	public const size_t SLOTS_PER_SERVER = 4;
 
 	public const uint8 STICK_NEUTRAL = 127;
+	public const uint64 MAC_UNAVAILABLE = 0;
 
 	internal enum MessageType {
 		VERSION = 0x100000,

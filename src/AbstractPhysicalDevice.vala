@@ -77,13 +77,13 @@ namespace Cemuhook {
 		/**
 		 * Get device's unique 48-bit identifier.
 		 *
-		 * Two devices should never have the same value, with exception of zero,
+		 * Two devices should never have the same value, with exception of {@link MAC_UNAVAILABLE},
 		 * which is used to indicate that device lack a meaningful unique identifier.
 		 *
 		 */
 		public virtual uint64 get_mac()
 		ensures ((result >> 48) == 0)
-			{ return 0; }
+			{ return MAC_UNAVAILABLE; }
 
 		/**
 		 * Get battery status of device.

@@ -433,7 +433,7 @@ namespace Cemuhook {
 				}
 			}
 			if (MAC in rtype) {
-				if (mac == 0) {
+				if (mac == MAC_UNAVAILABLE) {
 					warning("Requested to register devices with mac = 0. This is a bug in your DSU Client (emulator).");
 				}
 				foreach (var dev in devices) {
